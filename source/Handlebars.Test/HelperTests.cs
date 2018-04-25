@@ -251,7 +251,7 @@ namespace HandlebarsDotNet.Test
             var template = runtime.Compile(@"
               {{#each questions}}
                 {{#myBlock}}
-                  {{.}}={{../topField}}
+                  {{.}}={{../answer}}
                 {{/myBlock}}
               {{/each}}
             ");
