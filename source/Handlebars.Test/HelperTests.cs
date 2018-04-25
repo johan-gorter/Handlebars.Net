@@ -235,6 +235,31 @@ namespace HandlebarsDotNet.Test
             Assert.Equal(expected, output);
         }
 
+        [Fact]
+        public void AccessingParentContextInsideBlockHelper()
+        {
+            var runtime = Handlebars.Create();
+            runtime.RegisterHelper("myBlock", (writer, options, context, parameters) =>
+            {
+                options.Template(writer, context);
+            });
+            var data = new Dictionary<string, object>
+            {
+              {"answer", "42"},
+              {"questions", new List<string> {"question1", "question2", "question3"} }
+            };
+            var template = runtime.Compile(@"
+              {{#each questions}}
+                {{#myBlock}}
+                  {{.}}={{../answer}}
+                {{/myBlock}}
+              {{/each}}
+            ");
+
+            var output = template(data);
+            var expected = "\nquestion1=42\nquestion2=42\nquestion3=42\n";
+            Assert.Equal(expected, output.Replace(" ", ""));
+        }
     }
 }
 
